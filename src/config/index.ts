@@ -13,6 +13,8 @@ const DB_PASSWORD = process.env.DB_PASSWORD
 
 const DATABASE_URL = process.env.DATABASE_URL ?? 'postgres://postgres:password@localhost:5432/database_name'
 
+const SECRET_KEY_JWT = process.env.SECRET_KEY_JWT ?? ''
+
 const config = {
   APP_PORT,
   APP_URL,
@@ -21,7 +23,8 @@ const config = {
   DB_USER,
   DB_HOST,
   DB_PASSWORD,
-  DATABASE_URL
+  DATABASE_URL,
+  SECRET_KEY_JWT
 }
 
 export default config

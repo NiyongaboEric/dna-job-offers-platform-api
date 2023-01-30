@@ -3,7 +3,7 @@ import { Options } from 'swagger-jsdoc'
 const options = (url: string): Options => {
   return {
     definition: {
-      openapi: '3.0.0',
+      openapi: '3.0.3',
       info: {
         title: 'DNA Job offer Express API with Swagger',
         version: '1.0.0',
@@ -21,11 +21,13 @@ const options = (url: string): Options => {
       },
       servers: [
         {
-          url
+          url,
+          description: 'Connected server'
         }
-      ]
+      ],
+      schemes: ['http', 'https']
     },
-    apis: ['./routes/*.ts']
+    apis: ['**/*.ts']
   }
 }
 
