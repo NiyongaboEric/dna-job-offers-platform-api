@@ -6,14 +6,12 @@ const validateUserSignup = Joi.object().keys({
   email: Joi
     .string()
     .email({
-      minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] }
+      minDomainSegments: 2
     })
     .required(),
   password: Joi
     .string()
-    // .pattern(/^[a-zA-Z0-9]{3,30}$/)
-    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*])(?=.{8,})/)
+    .pattern(/^[a-zA-Z0-9]{3,30}$/)
     .required(),
   fullName: Joi
     .string()
@@ -23,8 +21,14 @@ const validateUserSignup = Joi.object().keys({
     .required()
 })
 
+const validateUserSignin = Joi.object().keys({
+  email: Joi.string().email({ minDomainSegments: 2 }).required(),
+  password: Joi.string().required()
+})
+
 const schemaValidation: Ivalidate = {
-  '/signup': validateUserSignup
+  '/signup': validateUserSignup,
+  '/signin': validateUserSignin
 }
 
 export default schemaValidation

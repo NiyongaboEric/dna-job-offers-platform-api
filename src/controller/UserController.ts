@@ -7,6 +7,14 @@ import Customize from '../helpers/customize'
 import configEnv from '../config/index'
 
 config()
+
+interface ITokenPayload {
+  email: string
+  is_verified: boolean
+  is_admin: boolean
+  token?: string
+}
+
 class UserController {
   /**
     * @param{input} req
@@ -31,21 +39,57 @@ class UserController {
       }
 
       const addNewUser = await UserModel.create(newUserData)
-      const displayData = {
+      const displayData: ITokenPayload = {
         email: addNewUser.dataValues.email,
         is_verified: addNewUser.dataValues.is_verified,
-        is_admin: addNewUser.dataValues.is_admin,
-        token: ''
+        is_admin: addNewUser.dataValues.is_admin
       }
 
       const token = JWT.sign(displayData, configEnv.SECRET_KEY_JWT)
       displayData.token = token
+
       await addNewUser.update({ token })
       await addNewUser.save()
 
       return Customize.commonResponse(req, res, 'User created Successfully', displayData, 201)
     } catch (error) {
       return Customize.commonResponse(req, res, 'Signup error', error, 400)
+    }
+  }
+
+  /**
+    * @param{input} req
+    * @param(email and names) res
+  */
+  async signin (req: express.Request, res: express.Response): Promise<any> {
+    try {
+      const { email, password } = req.body
+      const userInfo = await UserModel.findOne({ where: { email } })
+
+      if (userInfo == null) {
+        return Customize.commonMessage(req, res, 'Email do not found', 401)
+      }
+
+      const userPassword = bcrypt.compareSync(password, userInfo.dataValues.password)
+      if (!userPassword) {
+        return Customize.commonMessage(req, res, 'Email and password do not match', 401)
+      }
+
+      const displayData: ITokenPayload = {
+        email: userInfo.dataValues.email,
+        is_verified: userInfo.dataValues.is_verified,
+        is_admin: userInfo.dataValues.is_admin
+      }
+
+      const token = JWT.sign(displayData, configEnv.SECRET_KEY_JWT)
+      displayData.token = token
+
+      await userInfo.update({ token })
+      await userInfo.save()
+
+      return Customize.commonResponse(req, res, 'User signin Successfully', displayData, 201)
+    } catch (error) {
+      return Customize.commonResponse(req, res, 'Signin error', error, 400)
     }
   }
 }
