@@ -1,5 +1,6 @@
 import express from 'express'
 import morgan from 'morgan'
+import bodyParser from 'body-parser'
 
 import config from './config/index'
 import routes from './routes/index'
@@ -8,8 +9,11 @@ const app: express.Application = express()
 
 // configuration
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
 
 /**
  * API is specific and gives you
