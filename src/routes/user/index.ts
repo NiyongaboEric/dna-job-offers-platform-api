@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express'
 import handleValidation from '../../middleware/handleValidation'
+import AuthController from '../../controller/AuthController'
 import User from '../../controller/UserController'
+import verifyToken from '../../middleware/verifyToken'
+import isAdmin from '../../middleware/checkAdmin'
 
+const authenticate = new AuthController()
 const user = new User()
 
 const routes = express.Router()
@@ -65,7 +69,7 @@ const routes = express.Router()
  *       xml:
  *       name: User
  */
-routes.post('/signup', handleValidation, user.signup)
+routes.post('/signup', handleValidation, authenticate.signup)
 
 /**
  * @swagger
@@ -109,6 +113,35 @@ routes.post('/signup', handleValidation, user.signup)
  *       500:
  *         description: Some server error
  */
-routes.post('/signin', handleValidation, user.signin)
+routes.post('/signin', handleValidation, authenticate.signin)
+
+/**
+ * @swagger
+ * tags:
+ *   name: Admin
+ *   description: The Admin managing API
+ * /api/v1/user/all:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: check token authentication
+ *
+ *     responses:
+ *       200:
+ *         description: The users response
+ *         contens:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: The users not found
+ */
+routes.get('/all', verifyToken, isAdmin, user.viewAllUsers)
 
 export default routes
