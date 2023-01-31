@@ -56,9 +56,10 @@ At the moment the platform has version API 1. The routes is `url/api/v1`
 | -------------------- | ------------ | ----------------------- |
 | /                    | GET          | Homepage                |
 | *                    | GET          | 404   File not found    |
-| api/v1/auth/signup   | POST         | Create new user account |
 | api/v1/job-offer/new | POST         | Save new job offer      |
-| api/v1/auth/signin   | POST         | Login a user            |
+| api/v1/user/signup   | POST         | Sign up a user          |
+| api/v1/user/signin   | POST         | Login a user            |
+| api/v1/user/all      | GET          | View all users          |
 
 ## API Documentation
 
