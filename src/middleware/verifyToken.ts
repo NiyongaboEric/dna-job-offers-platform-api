@@ -21,7 +21,7 @@ const verifyToken = (req: customRequest, res: express.Response, next: express.Ne
   const bearerToken = req.headers.token as string
 
   if (bearerToken == null) {
-    return Customize.commonMessage(req, res, 'Authorization failured', 401)
+    return Customize.commonMessage(req, res, 'Authorization header failured', 401)
   }
 
   jwt.verify(bearerToken.split(':')[0].trim(), SECRET_KEY_JWT, (err, result) => {
