@@ -163,7 +163,7 @@ routes.get('/all', verifyToken, isAdmin, user.viewAllUsers)
  *
  *       - in: path
  *         name: user_id
- *         description: name that need to be deleted
+ *         description: name that need to be fetched
  *         required: true
  *         schema:
  *           type: string
@@ -245,5 +245,41 @@ routes.get('/:user_id', handleValidation, verifyToken, user.viewSingleUser)
  *       name: User
  */
 routes.put('/edit/:user_id', handleValidation, verifyToken, user.editSingleUser)
+
+/**
+ * @swagger
+ * tags:
+ *   name: Admin
+ *   description: The Admin/any user managing API
+ * /api/v1/user/{user_id}:
+ *   delete:
+ *     summary: Delete any user as an admin and owner user self delete
+ *     tags: [Users]
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: check token authentication
+ *
+ *       - in: path
+ *         name: user_id
+ *         description: name that need to be deleted
+ *         required: true
+ *         schema:
+ *           type: string
+
+ *     responses:
+ *       200:
+ *         description: The users response
+ *         contens:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: The users not found
+ */
+routes.delete('/:user_id', handleValidation, verifyToken, user.deleteSingleUser)
 
 export default routes

@@ -75,13 +75,37 @@ class UserController {
         return Customize.commonResponse(req, res, 'User updated', findUserToEdit.dataValues, 200)
       }
 
-      console.log(
-        findCurrentAuthUser.dataValues,
-        findUserToEdit.dataValues
-      )
       return Customize.commonMessage(req, res, 'You are not allowed to edit the user profile', 400)
     } catch (error) {
       return Customize.commonResponse(req, res, 'Update user data error', error, 500)
+    }
+  }
+
+  async deleteSingleUser (req: customRequest, res: express.Response): Promise<any> {
+    try {
+      const currentAuthUserPayload = req.currentUser as JwtPayload
+      const findCurrentAuthUser = await UserModel.findOne({ where: { email: currentAuthUserPayload.email } })
+
+      if (findCurrentAuthUser == null) return Customize.commonMessage(req, res, 'User authentication failure', 401)
+
+      const findUserToDelete = await UserModel.findOne({ where: { id: req.params.user_id } })
+      if (findUserToDelete == null) return Customize.commonMessage(req, res, 'User to delete not found', 404)
+
+      // super admin can delete anything
+      if (findCurrentAuthUser.dataValues.is_admin) {
+        await findUserToDelete.destroy()
+        return Customize.commonMessage(req, res, 'User deleted succesfully', 200)
+      }
+
+      // user can delete own profile
+      if (findCurrentAuthUser.dataValues.id === findUserToDelete.dataValues.id) {
+        await findUserToDelete.destroy()
+        return Customize.commonMessage(req, res, 'User deleted succesfully', 200)
+      }
+
+      return Customize.commonMessage(req, res, 'You are not allowed to delete the user profile', 400)
+    } catch (error) {
+      return Customize.commonResponse(req, res, 'Edit user data error', error, 500)
     }
   }
 }
