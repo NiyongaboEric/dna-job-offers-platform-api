@@ -9,7 +9,7 @@ import Customize from '../helpers/customize'
  */
 
 const handleValidation = (req: express.Request, res: express.Response, next: express.NextFunction): any => {
-  const reqMethods = ['post', 'put', 'patch', 'get']
+  const reqMethods = ['post', 'put', 'patch', 'get', 'delete']
   const route = req.route.path
   const method = req.method.toLowerCase()
 

@@ -23,7 +23,6 @@ const isAdmin = async (req: express.Request, res: express.Response, next: expres
     if (authUser.email == null) return Customize.commonMessage(req, res, 'user email not provided', 401)
 
     const getUser = await UserModel.findOne({ where: { email: authUser.email } })
-    console.log(getUser)
 
     if (getUser == null) return Customize.commonMessage(req, res, 'user email not found', 404)
 
