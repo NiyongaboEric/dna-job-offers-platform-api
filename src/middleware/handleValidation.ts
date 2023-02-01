@@ -9,7 +9,7 @@ import Customize from '../helpers/customize'
  */
 
 const handleValidation = (req: express.Request, res: express.Response, next: express.NextFunction): any => {
-  const reqMethods = ['post', 'put', 'patch']
+  const reqMethods = ['post', 'put', 'patch', 'get']
   const route = req.route.path
   const method = req.method.toLowerCase()
 
@@ -35,6 +35,7 @@ const handleValidation = (req: express.Request, res: express.Response, next: exp
 
     const sizeParams = Object.keys(req.params)
     if (schema != null && sizeParams.length > 0) {
+      console.log('\n\n\n', req.params)
       const { error, value } = schema.validate(req.params)
       if (error != null) {
         const joiError = {
@@ -45,7 +46,7 @@ const handleValidation = (req: express.Request, res: express.Response, next: exp
         return Customize.commonResponse(req, res, 'failed', joiError, 400)
       }
       req.body = value
-      next()
+      next(); return
     }
   }
   return Customize.commonMessage(req, res, 'Invalid request data. Please review request and try again.', 400)

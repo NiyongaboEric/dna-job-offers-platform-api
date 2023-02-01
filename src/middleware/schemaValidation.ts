@@ -26,9 +26,14 @@ const validateUserSignin = Joi.object().keys({
   password: Joi.string().required()
 })
 
+const validateSingleUser = Joi.object().keys({
+  user_id: Joi.string().guid({ version: ['uuidv4'] }).required()
+})
+
 const schemaValidation: Ivalidate = {
   '/signup': validateUserSignup,
-  '/signin': validateUserSignin
+  '/signin': validateUserSignin,
+  '/:user_id': validateSingleUser
 }
 
 export default schemaValidation

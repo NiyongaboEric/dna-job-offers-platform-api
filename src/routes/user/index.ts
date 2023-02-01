@@ -144,4 +144,40 @@ routes.post('/signin', handleValidation, authenticate.signin)
  */
 routes.get('/all', verifyToken, isAdmin, user.viewAllUsers)
 
+/**
+ * @swagger
+ * tags:
+ *   name: Admin
+ *   description: The Admin/any user managing API
+ * /api/v1/user/{user_id}:
+ *   get:
+ *     summary: Get a specific users
+ *     tags: [Users]
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: check token authentication
+ *
+ *       - in: path
+ *         name: user_id
+ *         description: name that need to be deleted
+ *         required: true
+ *         schema:
+ *           type: string
+
+ *     responses:
+ *       200:
+ *         description: The users response
+ *         contens:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: The users not found
+ */
+routes.get('/:user_id', handleValidation, verifyToken, user.singleUsers)
+
 export default routes
