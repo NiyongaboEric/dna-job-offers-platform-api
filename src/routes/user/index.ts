@@ -178,6 +178,72 @@ routes.get('/all', verifyToken, isAdmin, user.viewAllUsers)
  *       404:
  *         description: The users not found
  */
-routes.get('/:user_id', handleValidation, verifyToken, user.singleUsers)
+routes.get('/:user_id', handleValidation, verifyToken, user.viewSingleUser)
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: The Admin/any user managing API
+ * /api/v1/user/edit/{user_id}:
+ *   put:
+ *     summary: (Admin all users/Any user own profile) Edit a specific users
+ *     tags: [Users]
+ *     parameters:
+ *       - in: header
+ *         name: token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: check token authentication
+ *
+ *       - in: path
+ *         name: user_id
+ *         description: name that need to be deleted
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       Summary: Create a new user
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/EditUser'
+ *         application/xml:
+ *           schema:
+ *             $ref: '#/components/schemas/EditUser'
+
+ *     responses:
+ *       200:
+ *         description: The users response
+ *         contens:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/EditUser'
+ *       404:
+ *         description: The users not found
+ *
+ * components:
+ *   schemas:
+ *     EditUser:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           example: mail@domain.com
+ *         password:
+ *           type: string
+ *           example: 123Pass!@
+ *         fullName:
+ *           type: string
+ *           example: 'John Doe'
+ *         user_id:
+ *           type: string
+ *           example: YOUR UUID ID
+ *       xml:
+ *       name: User
+ */
+routes.put('/edit/:user_id', handleValidation, verifyToken, user.editSingleUser)
 
 export default routes

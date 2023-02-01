@@ -61,6 +61,7 @@ At the moment the platform has version API 1. The routes is `url/api/v1`
 | api/v1/user/signin             | POST         | Login a user            |
 | api/v1/user/all                | GET          | View all users          |
 | api/v1/user/:user_id           | GET          | View single user        |
+| api/v1/user/edit:user_id       | PUT          | Edit single user        |
 
 
 ## API Documentation

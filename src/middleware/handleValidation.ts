@@ -35,7 +35,6 @@ const handleValidation = (req: express.Request, res: express.Response, next: exp
 
     const sizeParams = Object.keys(req.params)
     if (schema != null && sizeParams.length > 0) {
-      console.log('\n\n\n', req.params)
       const { error, value } = schema.validate(req.params)
       if (error != null) {
         const joiError = {

@@ -3,6 +3,7 @@ import { config } from 'dotenv'
 import { customRequest } from '../middleware/verifyToken'
 import UserModel from '../services/db/models/user'
 import Customize from '../helpers/customize'
+import { JwtPayload } from '../middleware/checkAdmin'
 
 config()
 
@@ -29,7 +30,7 @@ class UserController {
    * @param {req} req
    * @param {res} res
   */
-  async singleUsers (req: customRequest, res: express.Response): Promise<any> {
+  async viewSingleUser (req: customRequest, res: express.Response): Promise<any> {
     try {
       const getSingleUsers = await UserModel.findOne({
         where: {
@@ -45,6 +46,42 @@ class UserController {
       return Customize.commonResponse(req, res, 'User available', getSingleUsers.dataValues, 200)
     } catch (error) {
       return Customize.commonResponse(req, res, 'Viewing single user error', error, 500)
+    }
+  }
+
+  async editSingleUser (req: customRequest, res: express.Response): Promise<any> {
+    try {
+      const currentAuthUserPayload = req.currentUser as JwtPayload
+      const findCurrentAuthUser = await UserModel.findOne({ where: { email: currentAuthUserPayload.email } })
+
+      if (findCurrentAuthUser == null) return Customize.commonMessage(req, res, 'User authentication failure', 401)
+
+      const findUserToEdit = await UserModel.findOne({ where: { id: req.params.user_id } })
+      if (findUserToEdit == null) return Customize.commonMessage(req, res, 'User to edit not found', 401)
+
+      delete req.body.user_id
+
+      // super admin can change anything
+      if (findCurrentAuthUser.dataValues.is_admin) {
+        await findUserToEdit.update(req.body)
+        await findUserToEdit.save()
+        return Customize.commonResponse(req, res, 'User updated', findUserToEdit.dataValues, 200)
+      }
+
+      // user can change own profile
+      if (findCurrentAuthUser.dataValues.id === findUserToEdit.dataValues.id) {
+        await findUserToEdit.update(req.body)
+        await findUserToEdit.save()
+        return Customize.commonResponse(req, res, 'User updated', findUserToEdit.dataValues, 200)
+      }
+
+      console.log(
+        findCurrentAuthUser.dataValues,
+        findUserToEdit.dataValues
+      )
+      return Customize.commonMessage(req, res, 'You are not allowed to edit the user profile', 400)
+    } catch (error) {
+      return Customize.commonResponse(req, res, 'Update user data error', error, 500)
     }
   }
 }

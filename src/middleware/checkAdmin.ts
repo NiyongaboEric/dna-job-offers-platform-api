@@ -8,7 +8,7 @@ import Customize from '../helpers/customize'
 
 dotenv.config()
 
-interface JwtPayload {
+export interface JwtPayload {
   email: string
   is_admin: boolean
   is_verified: boolean
@@ -23,10 +23,13 @@ const isAdmin = async (req: express.Request, res: express.Response, next: expres
     if (authUser.email == null) return Customize.commonMessage(req, res, 'user email not provided', 401)
 
     const getUser = await UserModel.findOne({ where: { email: authUser.email } })
+    console.log(getUser)
 
     if (getUser == null) return Customize.commonMessage(req, res, 'user email not found', 404)
 
-    if (getUser.dataValues.is_admin) next()
+    if (getUser.dataValues.is_admin) {
+      next(); return
+    } else return Customize.commonMessage(req, res, 'Not allowed to view users', 403)
   } catch (error) {
     return Customize.commonResponse(req, res, 'Authentication checking failed', error, 401)
   }
