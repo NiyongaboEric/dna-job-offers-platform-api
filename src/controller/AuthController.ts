@@ -9,6 +9,7 @@ import configEnv from '../config/index'
 config()
 
 interface ITokenPayload {
+  user_id: number
   email: string
   is_verified: boolean
   is_admin: boolean
@@ -40,6 +41,7 @@ class AuthController {
 
       const addNewUser = await UserModel.create(newUserData)
       const displayData: ITokenPayload = {
+        user_id: addNewUser.dataValues.id,
         email: addNewUser.dataValues.email,
         is_verified: addNewUser.dataValues.is_verified,
         is_admin: addNewUser.dataValues.is_admin
@@ -76,6 +78,7 @@ class AuthController {
       }
 
       const displayData: ITokenPayload = {
+        user_id: userInfo.dataValues.id,
         email: userInfo.dataValues.email,
         is_verified: userInfo.dataValues.is_verified,
         is_admin: userInfo.dataValues.is_admin
